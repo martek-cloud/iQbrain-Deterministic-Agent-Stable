@@ -1,0 +1,112 @@
+services:
+  # ── PostgreSQL (Temporal persistence) ────────────────────────────────────
+  postgresql:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: temporal
+      POSTGRES_PASSWORD: temporal
+      POSTGRES_DB: temporal
+    volumes:
+      - temporal-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U temporal"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── Temporal server ───────────────────────────────────────────────────────
+  temporal:
+    image: temporalio/auto-setup:latest
+    environment:
+      - DB=postgres12
+      - DB_PORT=5432
+      - POSTGRES_USER=temporal
+      - POSTGRES_PWD=temporal
+      - POSTGRES_SEEDS=postgresql
+    ports:
+      - "7233:7233"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "nc", "-z", "temporal", "7233"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # ── Temporal web UI ───────────────────────────────────────────────────────
+  temporal-ui:
+    image: temporalio/ui:latest
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_CORS_ORIGINS=http://localhost:3000
+    ports:
+      - "8233:8080"
+    depends_on:
+      temporal:
+        condition: service_healthy
+
+  # ── IQBrain Express API ───────────────────────────────────────────────────
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TEMPORAL_TASK_QUEUE=iqbrain-main
+      - PLM_ADAPTER=mock
+      - ERP_ADAPTER=mock
+      - MES_ADAPTER=mock
+      - MONITORING_INTERVAL_HOURS=${MONITORING_INTERVAL_HOURS:-24}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
+    ports:
+      - "3001:3001"
+    depends_on:
+      temporal:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Temporal worker (same image, different entry point) ───────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    command: ["/app/node_modules/.bin/tsx", "src/temporal/worker.ts"]
+    environment:
+      - NODE_ENV=production
+      - TEMPORAL_ADDRESS=temporal:7233
+      - TEMPORAL_NAMESPACE=default
+      - TEMPORAL_TASK_QUEUE=iqbrain-main
+      - PLM_ADAPTER=mock
+      - ERP_ADAPTER=mock
+      - MES_ADAPTER=mock
+      - MONITORING_INTERVAL_HOURS=${MONITORING_INTERVAL_HOURS:-24}
+    depends_on:
+      temporal:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── React SPA served by nginx (proxies /api → server) ────────────────────
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  temporal-pg-data:

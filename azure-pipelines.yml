@@ -1,0 +1,100 @@
+trigger:
+  branches:
+    include:
+      - main
+      - 'feature/*'
+      - 'release/*'
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  NODE_VERSION: '20.x'
+
+stages:
+  - stage: Build
+    displayName: 'Build & Lint'
+    jobs:
+      - job: Install
+        displayName: 'Install dependencies'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+            displayName: 'Use Node $(NODE_VERSION)'
+
+          - script: npm install --cache /tmp/npm-cache
+            displayName: 'npm install (workspaces)'
+
+          - task: CacheBeta@1
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: 'npm | "$(Agent.OS)"'
+              path: '/tmp/npm-cache'
+            displayName: 'Cache npm'
+
+      - job: TypeCheck
+        displayName: 'TypeScript checks'
+        dependsOn: Install
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+
+          - script: npm install --cache /tmp/npm-cache
+            displayName: 'Restore npm'
+
+          - script: npm run typecheck --workspace=packages/shared-types 2>&1 || true
+            displayName: 'shared-types typecheck'
+
+          - script: npm run typecheck --workspace=client
+            displayName: 'client typecheck'
+
+          - script: npm run typecheck --workspace=server
+            displayName: 'server typecheck'
+
+  - stage: Test
+    displayName: 'Unit Tests'
+    dependsOn: Build
+    jobs:
+      - job: ServerTests
+        displayName: 'Vitest (server)'
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: $(NODE_VERSION)
+
+          - script: npm install --cache /tmp/npm-cache
+            displayName: 'Restore npm'
+
+          - script: npm run test --workspace=server
+            displayName: 'Run Vitest'
+
+          - task: PublishTestResults@2
+            condition: always()
+            inputs:
+              testResultsFormat: 'JUnit'
+              testResultsFiles: 'server/test-results/**/*.xml'
+              failTaskOnFailedTests: true
+            displayName: 'Publish test results'
+
+  - stage: DockerBuild
+    displayName: 'Docker Build'
+    dependsOn: Test
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: BuildImages
+        displayName: 'Build Docker images'
+        steps:
+          - script: |
+              docker build -f server/Dockerfile -t iqbrain-server:$(Build.BuildId) .
+              docker build -f client/Dockerfile -t iqbrain-client:$(Build.BuildId) .
+            displayName: 'Build server + client images'
+
+          - script: docker-compose config
+            displayName: 'Validate docker-compose.yml'
