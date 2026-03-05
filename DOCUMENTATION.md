@@ -168,6 +168,7 @@ flowchart TB
     
     subgraph Server["The Processing Layer"]
         API[API Server - Routes requests]
+        CAN[Canonical Layer - Universal ID translator]
         TMP[Workflow Engine - Runs complex tasks]
     end
     
@@ -181,14 +182,75 @@ flowchart TB
     UI <-->|"Questions & Answers"| API
     API <-->|"Understanding intent & Writing responses"| LLM
     API <-->|"Run workflows"| TMP
-    TMP <-->|"Get part/assembly data"| PLM
-    TMP <-->|"Get manufacturing data"| ERP
-    TMP <-->|"Get production status"| MES
+    TMP <-->|"Resolve IDs"| CAN
+    CAN <-->|"Get part/assembly data"| PLM
+    CAN <-->|"Get manufacturing data"| ERP
+    CAN <-->|"Get production status"| MES
     
     style User fill:#e3f2fd
     style Server fill:#f5f5f5
     style External fill:#fff8e1
+    style CAN fill:#c8e6c9
 ```
+
+---
+
+## The Canonical Layer: The Universal Translator 🔗
+
+One of the most important pieces of iQbrain is the **Canonical Layer**. Here's why it matters:
+
+### The Problem
+Different systems use different IDs for the same thing:
+- **PLM** might call a part: `PART-ABC-123`
+- **ERP** might call the same part: `MAT-00456`
+- **MES** might call it: `PROD-ITEM-789`
+
+How do you know they're all the same part? That's the canonical layer's job!
+
+### The Solution: Canonical IDs
+
+```mermaid
+flowchart LR
+    subgraph Systems["Different Systems, Different IDs"]
+        PLM["PLM: PART-ABC-123"]
+        ERP["ERP: MAT-00456"]
+        MES["MES: PROD-ITEM-789"]
+    end
+    
+    subgraph Canonical["Canonical Layer"]
+        ID["Universal ID: iqb:part:a1b2c3d4e5f6"]
+    end
+    
+    PLM --> ID
+    ERP --> ID
+    MES --> ID
+    
+    style Canonical fill:#c8e6c9
+    style Systems fill:#fff3e0
+```
+
+The canonical layer:
+1. **Resolves** - Looks up if we already know this ID
+2. **Mints** - Creates a new universal ID if we don't
+3. **Maps** - Remembers the connection for next time
+
+### How It Works
+
+| Function | What It Does |
+|----------|--------------|
+| `resolve()` | "Do we know this ID?" → Returns the universal ID if yes |
+| `mintCanonicalId()` | "Create a new universal ID" → Always same input = same output |
+| `resolveOrMint()` | "Find or create" → Gets existing ID or makes a new one |
+| `getRelationships()` | "What's connected to this?" → Finds linked items |
+
+### Why This Matters
+
+When you ask "Where is part ABC-123 used?", iQbrain:
+1. Converts `ABC-123` to its canonical ID
+2. Searches ALL systems using that universal ID
+3. Finds matches even if they use different naming
+
+**Result:** You get complete answers across all your systems, not just one!
 
 ---
 
@@ -216,6 +278,9 @@ iQbrain-Deterministic-Agent-Stable/
 │   │   │   └── chat.ts           ← Handles chat requests
 │   │   ├── lib/
 │   │   │   └── openrouter.ts     ← Connects to AI for understanding
+│   │   ├── canonical/            ← THE UNIVERSAL TRANSLATOR ⭐
+│   │   │   ├── identityResolver.ts ← Maps IDs across systems
+│   │   │   └── relationships.ts    ← Tracks connections between items
 │   │   ├── temporal/
 │   │   │   ├── client.ts         ← Starts workflows
 │   │   │   ├── worker.ts         ← Runs workflows
@@ -270,6 +335,7 @@ sequenceDiagram
     participant Chat as 💬 Chat UI
     participant Server as ⚙️ Server
     participant AI as 🤖 AI Model
+    participant Canonical as 🔗 Canonical Layer
     participant Workflow as 📊 Workflow Engine
     participant Data as 🗄️ PLM/ERP/MES
 
@@ -284,7 +350,12 @@ sequenceDiagram
     Note over Server: Phase 2: Getting Data
     Server->>Workflow: Run change impact workflow
     Server->>Chat: Status: "Running workflow..."
-    Workflow->>Data: Get affected parts
+    
+    Note over Canonical: Resolve part ID to universal ID
+    Workflow->>Canonical: "What's the canonical ID for PART-ABC?"
+    Canonical->>Workflow: "iqb:part:a1b2c3"
+    
+    Workflow->>Data: Get affected parts (using canonical ID)
     Data->>Workflow: Parts data
     Workflow->>Data: Get production orders
     Data->>Workflow: Production data
