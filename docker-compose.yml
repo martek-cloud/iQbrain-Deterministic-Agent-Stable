@@ -9,7 +9,7 @@ services:
     volumes:
       - temporal-pg-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U temporal"]
+      test: [ "CMD-SHELL", "pg_isready -U temporal" ]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -29,7 +29,7 @@ services:
       postgresql:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "nc", "-z", "temporal", "7233"]
+      test: [ "CMD", "nc", "-z", "temporal", "7233" ]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -63,6 +63,8 @@ services:
       - PLM_ADAPTER=mock
       - ERP_ADAPTER=mock
       - MES_ADAPTER=mock
+    volumes:
+      - iqbrain-config:/app/server/data
     ports:
       - "3001:3001"
     depends_on:
@@ -70,7 +72,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3001/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      test: [ "CMD-SHELL", "node -e \"require('http').get('http://localhost:3001/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\"" ]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -81,7 +83,9 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
-    command: ["/app/node_modules/.bin/tsx", "src/temporal/worker.ts"]
+    command: [ "/app/node_modules/.bin/tsx", "src/temporal/worker.ts" ]
+    env_file:
+      - server/.env
     environment:
       - NODE_ENV=production
       - TEMPORAL_ADDRESS=temporal:7233
@@ -110,3 +114,4 @@ services:
 
 volumes:
   temporal-pg-data:
+  iqbrain-config:

@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { CiSearch, CiCircleRemove, CiCircleCheck } from 'react-icons/ci';
 import { FREE_MODELS } from '@iqbrain/shared-types';
 import type { OpenRouterModel } from '@iqbrain/shared-types';
 
 interface Props {
   selectedModel: string;
   onChange: (modelId: string) => void;
+  token?: string | null;
 }
 
 function providerFromId(id: string): string {
@@ -21,7 +23,7 @@ function formatContextWindow(tokens: number): string {
   return `${tokens} ctx`;
 }
 
-export function ModelSelector({ selectedModel, onChange }: Props) {
+export function ModelSelector({ selectedModel, onChange, token }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [models, setModels] = useState<OpenRouterModel[]>([]);
@@ -34,7 +36,9 @@ export function ModelSelector({ selectedModel, onChange }: Props) {
   useEffect(() => {
     setLoading(true);
     setError(false);
-    fetch('/api/models')
+    const headers: HeadersInit = {};
+    if (token) (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+    fetch('/api/models', { headers })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<{ models: OpenRouterModel[] }>;
@@ -53,7 +57,7 @@ export function ModelSelector({ selectedModel, onChange }: Props) {
         );
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -122,11 +126,7 @@ export function ModelSelector({ selectedModel, onChange }: Props) {
             )}
           </div>
         </div>
-        {isSelected && (
-          <svg className="flex-shrink-0 text-amber-400" width="12" height="12" viewBox="0 0 12 12" fill="none">
-            <path d="M2 6L5 9L10 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
+        {isSelected && <CiCircleCheck className="flex-shrink-0 text-amber-400 text-base" />}
       </button>
     );
   }
@@ -159,10 +159,7 @@ export function ModelSelector({ selectedModel, onChange }: Props) {
           {/* Search input */}
           <div className="px-2 pt-2 pb-1.5 border-b border-zinc-800">
             <div className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700 rounded-lg px-2 focus-within:border-amber-500/60 focus-within:ring-1 focus-within:ring-amber-500/20 transition-all">
-              <svg className="flex-shrink-0 text-zinc-500" width="11" height="11" viewBox="0 0 11 11" fill="none">
-                <circle cx="4.5" cy="4.5" r="3.5" stroke="currentColor" strokeWidth="1.2" />
-                <path d="M7.5 7.5L10 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-              </svg>
+              <CiSearch className="flex-shrink-0 text-zinc-500 text-sm" />
               <input
                 ref={searchRef}
                 value={search}
@@ -172,9 +169,7 @@ export function ModelSelector({ selectedModel, onChange }: Props) {
               />
               {search && (
                 <button onClick={() => setSearch('')} className="text-zinc-500 hover:text-zinc-300 transition-colors">
-                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                    <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                  </svg>
+                  <CiCircleRemove className="text-base" />
                 </button>
               )}
             </div>

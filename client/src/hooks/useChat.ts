@@ -11,6 +11,7 @@ export type StatusPhase = 'connecting' | 'parsing' | 'routing' | 'workflow' | 'g
 
 export interface UseChatOptions {
   useMock?: boolean;
+  token?: string | null;
 }
 
 export interface UseChatReturn {
@@ -25,7 +26,7 @@ export interface UseChatReturn {
 let msgCounter = 0;
 const newId = () => `msg-${++msgCounter}-${Date.now()}`;
 
-export function useChat({ useMock = true }: UseChatOptions = {}): UseChatReturn {
+export function useChat({ useMock = true, token }: UseChatOptions = {}): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -135,9 +136,11 @@ export function useChat({ useMock = true }: UseChatOptions = {}): UseChatReturn 
 
       async function streamFromAPI(query: string, selectedModel: string | undefined, signal: AbortSignal) {
         const currentSessionId = sessionId;
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
         const response = await fetch('/api/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({ message: query, sessionId: currentSessionId, model: selectedModel }),
           signal,
         });
@@ -173,7 +176,7 @@ export function useChat({ useMock = true }: UseChatOptions = {}): UseChatReturn 
         }
       }
     },
-    [isLoading, sessionId, useMock, appendToken, finaliseMessage]
+    [isLoading, sessionId, useMock, token, appendToken, finaliseMessage]
   );
 
   const clearMessages = useCallback(() => {

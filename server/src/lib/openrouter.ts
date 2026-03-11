@@ -1,4 +1,5 @@
 import type { ParsedIntent, WorkflowResult, ChatMessage } from '../types/intents';
+import { getOpenRouterKey } from '../config/store';
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1';
 
@@ -84,7 +85,7 @@ export async function parseIntent(
   history: ChatMessage[],
   model: string
 ): Promise<ParsedIntent> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = getOpenRouterKey();
   if (!apiKey) {
     console.warn('[openrouter] OPENROUTER_API_KEY not set — returning unknown intent');
     return { intent: 'unknown', confidence: 0, parameters: { rawQuery: message }, rawQuery: message };
@@ -133,7 +134,7 @@ export async function generateNLGStream(
   intent: ParsedIntent,
   model: string
 ): Promise<Response> {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = getOpenRouterKey();
   if (!apiKey) {
     // Return a mock stream with a static response when no API key
     const encoder = new TextEncoder();
@@ -180,7 +181,7 @@ async function fetchWithFallback(
       response = await fetch(`${OPENROUTER_BASE}/chat/completions`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${getOpenRouterKey()}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://iqbrain.ai',
           'X-Title': 'IQBrain',

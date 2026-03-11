@@ -1,4 +1,5 @@
 import { Router, type Request, type Response } from 'express';
+import { getOpenRouterKey, getConfig } from '../config/store';
 
 export const modelsRouter = Router();
 
@@ -18,7 +19,7 @@ interface OpenRouterModelRaw {
 let cache: { data: OpenRouterModelRaw[]; fetchedAt: number } | null = null;
 
 modelsRouter.get('/', async (_req: Request, res: Response) => {
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = getOpenRouterKey();
 
   if (!apiKey || apiKey === 'sk-or-...') {
     res.status(503).json({ error: 'OPENROUTER_API_KEY not configured' });
@@ -26,7 +27,8 @@ modelsRouter.get('/', async (_req: Request, res: Response) => {
   }
 
   if (cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS) {
-    res.json({ models: cache.data, cached: true, cachedAt: cache.fetchedAt });
+    const filtered = applyAllowlist(cache.data);
+    res.json({ models: filtered, cached: true, cachedAt: cache.fetchedAt });
     return;
   }
 
@@ -54,9 +56,15 @@ modelsRouter.get('/', async (_req: Request, res: Response) => {
     });
 
     cache = { data: sorted, fetchedAt: Date.now() };
-    res.json({ models: sorted, cached: false });
+    res.json({ models: applyAllowlist(sorted), cached: false });
   } catch (err) {
     console.error('[models] Failed to fetch from OpenRouter:', err);
     res.status(502).json({ error: 'Failed to reach OpenRouter API' });
   }
 });
+
+function applyAllowlist(models: OpenRouterModelRaw[]): OpenRouterModelRaw[] {
+  const { modelAllowlist } = getConfig();
+  if (!modelAllowlist || modelAllowlist.length === 0) return models;
+  return models.filter((m) => modelAllowlist.includes(m.id));
+}
