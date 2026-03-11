@@ -15,7 +15,6 @@ export {
 export {
   resolvePartIdentity,
   recursiveWhereUsed,
-  flattenTree,
   optionalProductionOrderBranch,
 } from '../workflows/whereUsed/activities';
 

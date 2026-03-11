@@ -1,4 +1,4 @@
-import { ASSEMBLIES, MBOM_MAPPINGS, RELATIONSHIPS } from '../../adapters/mock/data';
+import { ASSEMBLIES, MBOM_MAPPINGS, RELATIONSHIPS } from '../../adapters/data';
 import type { BOMNode } from '../../types/canonical';
 import type { ReconcileLine, ReconcileCategory } from '../../types/intents';
 

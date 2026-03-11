@@ -1,4 +1,4 @@
-import { PARTS, ASSEMBLIES, RELATIONSHIPS, PRODUCTION_ORDERS } from '../../adapters/mock/data';
+import { PARTS, ASSEMBLIES, RELATIONSHIPS, PRODUCTION_ORDERS } from '../../adapters/data';
 import type { WhereUsedNode, ProductionOrderSummary } from '../../types/intents';
 
 export function resolvePartIdentity(partNumber: string): string | null {
@@ -12,12 +12,13 @@ export function resolvePartIdentity(partNumber: string): string | null {
 
 export function recursiveWhereUsed(
   canonicalId: string,
-  visited: Set<string> = new Set(),
+  visited: Set<string> | unknown = new Set(),
   depth = 0,
   maxDepth = 10
 ): WhereUsedNode[] {
-  if (depth >= maxDepth || visited.has(canonicalId)) return [];
-  visited.add(canonicalId);
+  const seen = visited instanceof Set ? visited : new Set<string>();
+  if (depth >= maxDepth || seen.has(canonicalId)) return [];
+  seen.add(canonicalId);
 
   const nodes: WhereUsedNode[] = [];
   const usedInRels = RELATIONSHIPS.filter((r) => r.fromId === canonicalId && r.type === 'USED_IN');
@@ -25,7 +26,7 @@ export function recursiveWhereUsed(
   for (const rel of usedInRels) {
     const assembly = Object.values(ASSEMBLIES).find((a) => a.canonicalId === rel.toId);
     if (!assembly) continue;
-    const children = recursiveWhereUsed(rel.toId, visited, depth + 1, maxDepth);
+    const children = recursiveWhereUsed(rel.toId, seen, depth + 1, maxDepth);
     nodes.push({
       assemblyId: assembly.assemblyId,
       assemblyName: assembly.name,

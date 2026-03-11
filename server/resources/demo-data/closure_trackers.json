@@ -1,0 +1,26 @@
+{
+  "ECR-2221": {
+    "canonicalId": "iqb:tracker:ecr-2221",
+    "changeId": "ECR-2221",
+    "overallStatus": "ERP_PARTIAL",
+    "erpStatus": "PARTIAL",
+    "mesStatus": "NOT_STARTED",
+    "mbomUpdatesRequired": 3,
+    "mbomUpdatesComplete": 1,
+    "ordersAffected": 2,
+    "ordersAligned": 0,
+    "bottleneck": "ERP",
+    "lagDays": 4,
+    "mbomUpdateDetails": [
+      { "mbomId": "MBOM-001", "assemblyId": "MOTOR-CTRL-V2", "status": "UPDATED", "updatedAt": "2026-02-28T10:00:00Z" },
+      { "mbomId": "MBOM-002", "assemblyId": "DRIVE-UNIT-X1", "status": "PENDING" },
+      { "mbomId": "MBOM-003", "assemblyId": "DRIVE-UNIT-X1-SUB", "status": "PENDING" }
+    ],
+    "orderAlignmentDetails": [
+      { "orderId": "PO-88712", "assemblyId": "MOTOR-CTRL-V2", "status": "PENDING" },
+      { "orderId": "PO-88841", "assemblyId": "DRIVE-UNIT-X1", "status": "PENDING" }
+    ],
+    "startedAt": "2026-02-26T17:00:00Z",
+    "lastCheckedAt": "2026-03-01T08:00:00Z"
+  }
+}

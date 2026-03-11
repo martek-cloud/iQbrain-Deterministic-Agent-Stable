@@ -1,4 +1,4 @@
-import { PARTS, ASSEMBLIES, PRODUCTION_ORDERS, INVENTORY, RELATIONSHIPS } from '../../adapters/mock/data';
+import { PARTS, ASSEMBLIES, PRODUCTION_ORDERS, INVENTORY, RELATIONSHIPS } from '../../adapters/data';
 import type {
   AffectedAssembly,
   ProductionOrderSummary,

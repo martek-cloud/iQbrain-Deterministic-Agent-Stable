@@ -1,4 +1,4 @@
-import { CLOSURE_TRACKERS } from '../../adapters/mock/data';
+import { CLOSURE_TRACKERS } from '../../adapters/data';
 import type { ChangeClosureTracker } from '../../types/canonical';
 
 export function getTrackerById(changeId: string): ChangeClosureTracker | null {

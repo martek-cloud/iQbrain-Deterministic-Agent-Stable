@@ -1,4 +1,4 @@
-import { RELATIONSHIPS } from '../adapters/mock/data';
+import { RELATIONSHIPS } from '../adapters/data';
 import type { RelationshipType, Relationship } from '../types/canonical';
 
 export function getRelationships(

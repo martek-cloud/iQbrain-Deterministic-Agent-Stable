@@ -244,6 +244,7 @@ All variables live in `server/.env` (copy from `server/.env.example`):
 | `TEMPORAL_ADDRESS` | `localhost:7233` | Temporal server address |
 | `TEMPORAL_NAMESPACE` | `iqbrain` | Temporal namespace |
 | `TEMPORAL_TASK_QUEUE` | `iqbrain-main` | Task queue name used by worker and client |
+| `DATA_SOURCE` | *(unset)* | Set to `static` to load demo data from `server/resources/demo-data/` (JSON files: parts, assemblies, changes, mbom_mappings, production_orders, inventory, closure_trackers, relationships). Unset = in-code mock data. |
 | `PLM_ADAPTER` | `mock` | PLM adapter to use (`mock` or custom) |
 | `ERP_ADAPTER` | `mock` | ERP adapter to use |
 | `MES_ADAPTER` | `mock` | MES adapter to use |
@@ -344,6 +345,8 @@ To add a real adapter:
 ## Demo Scenario
 
 The built-in mock data is designed around a realistic engineering change scenario:
+
+**Team demo with static data:** To run the same ecosystem (workflows, intent, LLM, canonical model, adapters) with data loaded from files instead of in-code fixtures, set `DATA_SOURCE=static` in `server/.env` and ensure the server is run from the `server/` directory (or that `server/resources/demo-data/` exists relative to your working directory). The folder must contain the eight canonical-shaped JSON files: `parts.json`, `assemblies.json`, `changes.json`, `mbom_mappings.json`, `production_orders.json`, `inventory.json`, `closure_trackers.json`, `relationships.json`. Edit these files to align IDs and numbers with your demo script without changing code.
 
 > **ECR-2221** — Motor Controller V2 requires replacing resistor **R245** (2.2 kΩ) with **R250** (4.7 kΩ) due to component shortage. The change was released in PLM 4 days ago but ERP propagation is incomplete.
 

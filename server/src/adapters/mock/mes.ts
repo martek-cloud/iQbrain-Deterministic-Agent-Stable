@@ -1,6 +1,6 @@
 import type { IMESAdapter, HealthCheckResult } from '../interfaces';
 import type { ProductionOrder } from '../../types/canonical';
-import { PRODUCTION_ORDERS } from './data';
+import { PRODUCTION_ORDERS } from '../data';
 
 export class MockMESAdapter implements IMESAdapter {
   async getProductionOrders(assemblyId?: string): Promise<ProductionOrder[]> {

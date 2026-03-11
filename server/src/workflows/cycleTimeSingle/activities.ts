@@ -1,4 +1,4 @@
-import { CHANGES } from '../../adapters/mock/data';
+import { CHANGES } from '../../adapters/data';
 import type { Change, StageTransition } from '../../types/canonical';
 import type { StageMetric, CycleTimeData } from '../../types/intents';
 

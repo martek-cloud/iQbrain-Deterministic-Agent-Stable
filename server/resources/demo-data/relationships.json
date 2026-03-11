@@ -1,0 +1,15 @@
+[
+  { "fromId": "iqb:part:r245", "toId": "iqb:assembly:motor-ctrl-v2", "type": "USED_IN", "authority": "PLM" },
+  { "fromId": "iqb:assembly:motor-ctrl-v2", "toId": "iqb:part:r245", "type": "USES", "authority": "PLM" },
+  { "fromId": "iqb:assembly:motor-ctrl-v2", "toId": "iqb:assembly:drive-unit-x1", "type": "USED_IN", "authority": "PLM" },
+  { "fromId": "iqb:assembly:drive-unit-x1", "toId": "iqb:assembly:motor-ctrl-v2", "type": "USES", "authority": "PLM" },
+  { "fromId": "iqb:part:r245", "toId": "iqb:part:r250", "type": "REPLACES", "authority": "PLM", "metadata": { "changeId": "ECR-2221" } },
+  { "fromId": "iqb:part:r250", "toId": "iqb:part:r245", "type": "REPLACED_BY", "authority": "PLM", "metadata": { "changeId": "ECR-2221" } },
+  { "fromId": "iqb:change:ecr-2221", "toId": "iqb:tracker:ecr-2221", "type": "TRACKED_BY", "authority": "PLM" },
+  { "fromId": "iqb:change:ecr-2221", "toId": "iqb:assembly:motor-ctrl-v2", "type": "AFFECTS", "authority": "PLM" },
+  { "fromId": "iqb:change:ecr-2221", "toId": "iqb:assembly:drive-unit-x1", "type": "AFFECTS", "authority": "PLM" },
+  { "fromId": "iqb:assembly:drive-unit-x1", "toId": "iqb:assembly:motor-ctrl-v2", "type": "PARENT_ASSEMBLY", "authority": "PLM" },
+  { "fromId": "iqb:assembly:motor-ctrl-v2", "toId": "iqb:assembly:drive-unit-x1", "type": "CHILD_COMPONENT", "authority": "PLM" },
+  { "fromId": "iqb:assembly:motor-ctrl-v2", "toId": "iqb:part:r250", "type": "USES", "authority": "ERP" },
+  { "fromId": "iqb:change:ecr-2221", "toId": "iqb:part:r245", "type": "RELEASED_VIA", "authority": "PLM" }
+]

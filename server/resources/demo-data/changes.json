@@ -1,0 +1,33 @@
+{
+  "ECR-2221": {
+    "canonicalId": "iqb:change:ecr-2221",
+    "changeId": "ECR-2221",
+    "title": "Replace R245 with R250 in Motor Controller V2",
+    "status": "RELEASED",
+    "createdAt": "2026-02-08T09:00:00Z",
+    "releasedAt": "2026-02-26T17:00:00Z",
+    "affectedParts": ["iqb:part:r245", "iqb:part:r250", "iqb:assembly:motor-ctrl-v2"],
+    "externalIds": [{ "system": "PLM", "id": "PLM-ECR-2221" }],
+    "lifecycleHistory": [
+      { "stage": "DRAFT", "enteredAt": "2026-02-08T09:00:00Z", "exitedAt": "2026-02-10T17:00:00Z", "action": "SUBMIT" },
+      { "stage": "REVIEW", "enteredAt": "2026-02-10T17:00:00Z", "exitedAt": "2026-02-13T09:00:00Z", "action": "SUBMIT" },
+      { "stage": "APPROVAL", "enteredAt": "2026-02-13T09:00:00Z", "exitedAt": "2026-02-17T09:00:00Z", "action": "REJECT", "actor": "J.Smith" },
+      { "stage": "REVIEW", "enteredAt": "2026-02-17T09:00:00Z", "exitedAt": "2026-02-18T17:00:00Z", "action": "SUBMIT" },
+      { "stage": "APPROVAL", "enteredAt": "2026-02-18T17:00:00Z", "exitedAt": "2026-02-24T09:00:00Z", "action": "APPROVE", "actor": "J.Smith" },
+      { "stage": "RELEASE", "enteredAt": "2026-02-24T09:00:00Z", "exitedAt": "2026-02-26T17:00:00Z", "action": "RELEASE" }
+    ]
+  },
+  "ECO-1145": {
+    "canonicalId": "iqb:change:eco-1145",
+    "changeId": "ECO-1145",
+    "title": "Update capacitor spec on MOTOR-CTRL-V2",
+    "status": "IN_REVIEW",
+    "createdAt": "2026-03-01T08:00:00Z",
+    "affectedParts": ["iqb:part:c112", "iqb:assembly:motor-ctrl-v2"],
+    "externalIds": [{ "system": "PLM", "id": "PLM-ECO-1145" }],
+    "lifecycleHistory": [
+      { "stage": "DRAFT", "enteredAt": "2026-03-01T08:00:00Z", "exitedAt": "2026-03-02T10:00:00Z", "action": "SUBMIT" },
+      { "stage": "REVIEW", "enteredAt": "2026-03-02T10:00:00Z" }
+    ]
+  }
+}

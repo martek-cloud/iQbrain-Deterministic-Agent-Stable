@@ -1,7 +1,7 @@
 import { makeStep, completeStep, errorResult, uuidv4 } from '../helpers';
 import type { WorkflowPlugin } from '../plugin';
 import type { WorkflowResult, BomComparisonParams } from '../../types/intents';
-import { ASSEMBLIES } from '../../adapters/mock/data';
+import { ASSEMBLIES } from '../../adapters/data';
 import { fetchEBOM, fetchMBOM, reconcile } from './activities';
 
 async function runEbomMbomReconcileWorkflow(params: BomComparisonParams): Promise<WorkflowResult> {

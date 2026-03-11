@@ -1,0 +1,18 @@
+{
+  "R245": {
+    "partId": "iqb:part:r245",
+    "partNumber": "R245",
+    "onHandQty": 312,
+    "unitCost": 0.12,
+    "currency": "USD",
+    "warehouseId": "WH-01"
+  },
+  "R250": {
+    "partId": "iqb:part:r250",
+    "partNumber": "R250",
+    "onHandQty": 0,
+    "unitCost": 0.14,
+    "currency": "USD",
+    "warehouseId": "WH-01"
+  }
+}

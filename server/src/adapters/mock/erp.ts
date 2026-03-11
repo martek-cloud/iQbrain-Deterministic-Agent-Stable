@@ -1,6 +1,6 @@
 import type { IERPAdapter, HealthCheckResult } from '../interfaces';
 import type { MBOMMapping, ProductionOrder, InventoryRecord, ChangeClosureTracker } from '../../types/canonical';
-import { MBOM_MAPPINGS, PRODUCTION_ORDERS, INVENTORY, CLOSURE_TRACKERS } from './data';
+import { MBOM_MAPPINGS, PRODUCTION_ORDERS, INVENTORY, CLOSURE_TRACKERS } from '../data';
 
 export class MockERPAdapter implements IERPAdapter {
   async getMBOMMapping(mbomId: string): Promise<MBOMMapping | null> {

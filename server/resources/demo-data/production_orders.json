@@ -1,0 +1,26 @@
+{
+  "PO-88712": {
+    "canonicalId": "iqb:po:po-88712",
+    "orderId": "PO-88712",
+    "assemblyId": "MOTOR-CTRL-V2",
+    "mbomRevision": "B",
+    "status": "IN_PROGRESS",
+    "quantity": 24,
+    "estimatedValue": 185000,
+    "currency": "USD",
+    "scheduledStart": "2026-02-15T00:00:00Z",
+    "scheduledEnd": "2026-03-15T00:00:00Z"
+  },
+  "PO-88841": {
+    "canonicalId": "iqb:po:po-88841",
+    "orderId": "PO-88841",
+    "assemblyId": "DRIVE-UNIT-X1",
+    "mbomRevision": "B",
+    "status": "PLANNED",
+    "quantity": 12,
+    "estimatedValue": 111000,
+    "currency": "USD",
+    "scheduledStart": "2026-03-20T00:00:00Z",
+    "scheduledEnd": "2026-04-20T00:00:00Z"
+  }
+}

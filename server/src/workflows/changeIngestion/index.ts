@@ -1,7 +1,7 @@
 import { makeStep, completeStep, uuidv4 } from '../helpers';
 import type { WorkflowPlugin } from '../plugin';
 import type { WorkflowResult, IntentParams } from '../../types/intents';
-import { CHANGES } from '../../adapters/mock/data';
+import { CHANGES } from '../../adapters/data';
 
 interface ChangeIngestionParams {
   sinceTimestamp?: string;

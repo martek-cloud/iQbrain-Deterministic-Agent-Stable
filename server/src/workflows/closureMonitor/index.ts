@@ -1,7 +1,7 @@
 import { makeStep, completeStep, uuidv4 } from '../helpers';
 import type { WorkflowPlugin } from '../plugin';
 import type { WorkflowResult, IntentParams } from '../../types/intents';
-import { CLOSURE_TRACKERS, MBOM_MAPPINGS, PRODUCTION_ORDERS } from '../../adapters/mock/data';
+import { CLOSURE_TRACKERS, MBOM_MAPPINGS, PRODUCTION_ORDERS } from '../../adapters/data';
 
 // MONITORING_INTERVAL_HOURS: set to 0.01 for local dev (~36s), default 24 for prod
 const MONITORING_INTERVAL_HOURS = parseFloat(process.env.MONITORING_INTERVAL_HOURS ?? '24');

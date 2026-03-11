@@ -25,7 +25,6 @@ const {
   assembleImpactResult,
   resolvePartIdentity,
   recursiveWhereUsed,
-  flattenTree,
   optionalProductionOrderBranch,
   getTrackerById,
   getAllOpenTrackers,
@@ -64,6 +63,15 @@ function errorResult(
     durationMs: 0,
     errorMessage: message,
   };
+}
+
+function flattenWhereUsedTree<T extends { children: T[] }>(nodes: T[]): T[] {
+  const flat: T[] = [];
+  for (const n of nodes) {
+    flat.push(n);
+    flat.push(...flattenWhereUsedTree(n.children));
+  }
+  return flat;
 }
 
 // ─── Change Impact Analysis ───────────────────────────────────────────────────
@@ -135,8 +143,8 @@ export async function whereUsedAnalysisWorkflow(params: IntentParams): Promise<W
 
   const step2 = makeStep('Recursive where-used traversal');
   steps.push(step2);
-  const tree = await recursiveWhereUsed(canonicalId, new Set(), 0, maxDepth);
-  const flat = await flattenTree(tree);
+  const tree = await recursiveWhereUsed(canonicalId, [], 0, maxDepth);
+  const flat = flattenWhereUsedTree(tree);
   const topLevelCount = flat.filter((n) => n.isTopLevel).length;
   const maxDepthReached = flat.length > 0 ? Math.max(...flat.map((n) => n.depth)) : 0;
   steps[1] = completeStep(step2);

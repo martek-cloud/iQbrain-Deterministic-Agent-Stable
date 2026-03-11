@@ -1,0 +1,27 @@
+{
+  "MOTOR-CTRL-V2": {
+    "canonicalId": "iqb:assembly:motor-ctrl-v2",
+    "assemblyId": "MOTOR-CTRL-V2",
+    "name": "Motor Controller V2",
+    "revision": "C",
+    "isTopLevel": false,
+    "externalIds": [{ "system": "PLM", "id": "PLM-ASSY-MCTRLV2" }],
+    "ebom": [
+      { "partId": "iqb:part:r245", "partNumber": "R245", "quantity": 2, "unit": "EA" },
+      { "partId": "iqb:part:c112", "partNumber": "C112", "quantity": 4, "unit": "EA" },
+      { "partId": "iqb:part:ic-78l05", "partNumber": "IC-78L05", "quantity": 1, "unit": "EA" },
+      { "partId": "iqb:part:r250", "partNumber": "R250", "quantity": 2, "unit": "EA" }
+    ]
+  },
+  "DRIVE-UNIT-X1": {
+    "canonicalId": "iqb:assembly:drive-unit-x1",
+    "assemblyId": "DRIVE-UNIT-X1",
+    "name": "Drive Unit X1",
+    "revision": "B",
+    "isTopLevel": true,
+    "externalIds": [{ "system": "PLM", "id": "PLM-ASSY-DRVUX1" }],
+    "ebom": [
+      { "partId": "iqb:assembly:motor-ctrl-v2", "partNumber": "MOTOR-CTRL-V2", "quantity": 1, "unit": "EA" }
+    ]
+  }
+}

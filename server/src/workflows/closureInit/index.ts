@@ -2,8 +2,13 @@ import { makeStep, completeStep, uuidv4 } from '../helpers';
 import type { WorkflowPlugin } from '../plugin';
 import type { WorkflowResult, IntentParams } from '../../types/intents';
 import type { ChangeClosureTracker } from '../../types/canonical';
-import { CHANGES, ASSEMBLIES, RELATIONSHIPS, PRODUCTION_ORDERS } from '../../adapters/mock/data';
-import { CLOSURE_TRACKERS } from '../../adapters/mock/data';
+import {
+  CHANGES,
+  ASSEMBLIES,
+  RELATIONSHIPS,
+  PRODUCTION_ORDERS,
+  CLOSURE_TRACKERS,
+} from '../../adapters/data';
 
 interface ClosureInitParams {
   changeId: string;

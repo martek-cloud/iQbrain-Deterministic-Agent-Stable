@@ -1,6 +1,6 @@
 import type { IPLMAdapter, HealthCheckResult } from '../interfaces';
 import type { Part, Assembly, Change, Relationship, RelationshipType } from '../../types/canonical';
-import { PARTS, ASSEMBLIES, CHANGES, RELATIONSHIPS } from './data';
+import { PARTS, ASSEMBLIES, CHANGES, RELATIONSHIPS } from '../data';
 
 export class MockPLMAdapter implements IPLMAdapter {
   async getPart(partNumber: string): Promise<Part | null> {

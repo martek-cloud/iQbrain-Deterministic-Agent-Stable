@@ -1,0 +1,34 @@
+{
+  "MBOM-001": {
+    "canonicalId": "iqb:mbom:mbom-001",
+    "mbomId": "MBOM-001",
+    "assemblyId": "MOTOR-CTRL-V2",
+    "bomRevision": "C",
+    "changeId": "ECR-2221",
+    "lastSyncedAt": "2026-02-28T10:00:00Z",
+    "lines": [
+      { "partId": "iqb:part:r250", "partNumber": "R250", "quantity": 3, "unit": "EA", "scrapFactor": 0.02 },
+      { "partId": "iqb:part:c112", "partNumber": "C112", "quantity": 4, "unit": "EA" },
+      { "partId": "iqb:part:ic-78l05", "partNumber": "IC-78L05", "quantity": 1, "unit": "EA" },
+      { "partId": "iqb:part:m-alt-01", "partNumber": "M-ALT-01", "quantity": 1, "unit": "EA" }
+    ]
+  },
+  "MBOM-002": {
+    "canonicalId": "iqb:mbom:mbom-002",
+    "mbomId": "MBOM-002",
+    "assemblyId": "DRIVE-UNIT-X1",
+    "bomRevision": "B",
+    "lastSyncedAt": "2026-02-20T08:00:00Z",
+    "lines": [
+      { "partId": "iqb:assembly:motor-ctrl-v2", "partNumber": "MOTOR-CTRL-V2", "quantity": 1, "unit": "EA" }
+    ]
+  },
+  "MBOM-003": {
+    "canonicalId": "iqb:mbom:mbom-003",
+    "mbomId": "MBOM-003",
+    "assemblyId": "DRIVE-UNIT-X1-SUB",
+    "bomRevision": "A",
+    "lastSyncedAt": "2026-02-15T08:00:00Z",
+    "lines": []
+  }
+}

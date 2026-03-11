@@ -126,6 +126,18 @@ function safeParseIntent(raw: string, originalQuery: string): ParsedIntent {
   }
 }
 
+// Flatten where-used tree to a compact list for NLG prompt (reduces payload size)
+function flattenForNLG(
+  nodes: Array<{ assemblyId: string; assemblyName: string; depth: number; isTopLevel: boolean; children: unknown[] }>
+): Array<{ assemblyId: string; assemblyName: string; depth: number }> {
+  const flat: Array<{ assemblyId: string; assemblyName: string; depth: number }> = [];
+  for (const n of nodes) {
+    flat.push({ assemblyId: n.assemblyId, assemblyName: n.assemblyName, depth: n.depth });
+    flat.push(...flattenForNLG(n.children as typeof nodes));
+  }
+  return flat;
+}
+
 // ============================================================
 // generateNLGStream
 // ============================================================
@@ -142,9 +154,22 @@ export async function generateNLGStream(
     return new Response(encoder.encode(body), { headers: { 'Content-Type': 'text/event-stream' } });
   }
 
-  const dataContext = workflowResult
-    ? `Workflow type: ${workflowResult.workflowType}\nStatus: ${workflowResult.status}\nData: ${JSON.stringify(workflowResult.data, null, 2)}`
-    : `Intent: ${intent.intent}\nParameters: ${JSON.stringify(intent.parameters)}`;
+  let dataContext: string;
+  if (workflowResult?.workflowType === 'where_used_analysis' && workflowResult.data) {
+    const d = workflowResult.data as {
+      partNumber: string;
+      totalAssemblies: number;
+      topLevelCount: number;
+      maxDepthReached: number;
+      tree: Array<{ assemblyId: string; assemblyName: string; depth: number; isTopLevel: boolean; children: unknown[] }>;
+    };
+    const assemblies = flattenForNLG(d.tree);
+    dataContext = `Workflow type: where_used_analysis\nStatus: ${workflowResult.status}\nData: ${JSON.stringify({ partNumber: d.partNumber, totalAssemblies: d.totalAssemblies, topLevelCount: d.topLevelCount, maxDepthReached: d.maxDepthReached, assemblies }, null, 2)}`;
+  } else {
+    dataContext = workflowResult
+      ? `Workflow type: ${workflowResult.workflowType}\nStatus: ${workflowResult.status}\nData: ${JSON.stringify(workflowResult.data, null, 2)}`
+      : `Intent: ${intent.intent}\nParameters: ${JSON.stringify(intent.parameters)}`;
+  }
 
   const messages = [
     { role: 'system' as const, content: NLG_SYSTEM_PROMPT },

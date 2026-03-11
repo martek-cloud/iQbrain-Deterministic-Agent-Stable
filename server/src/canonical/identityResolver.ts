@@ -44,7 +44,7 @@ export function resolveOrMint(
 }
 
 // Pre-populate the identity map with known data
-import { PARTS, ASSEMBLIES, CHANGES, MBOM_MAPPINGS, PRODUCTION_ORDERS } from '../adapters/mock/data';
+import { PARTS, ASSEMBLIES, CHANGES, MBOM_MAPPINGS, PRODUCTION_ORDERS } from '../adapters/data';
 
 (function preloadIdentityMap() {
   for (const part of Object.values(PARTS)) {

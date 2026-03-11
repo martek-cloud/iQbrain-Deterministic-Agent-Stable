@@ -1,0 +1,52 @@
+{
+  "R245": {
+    "canonicalId": "iqb:part:r245",
+    "partNumber": "R245",
+    "name": "Resistor 2.2K Ohm",
+    "revision": "A",
+    "status": "RELEASED",
+    "externalIds": [{ "system": "PLM", "id": "PLM-PART-R245" }],
+    "unitCost": 0.12,
+    "currency": "USD"
+  },
+  "R250": {
+    "canonicalId": "iqb:part:r250",
+    "partNumber": "R250",
+    "name": "Resistor 4.7K Ohm",
+    "revision": "B",
+    "status": "RELEASED",
+    "externalIds": [{ "system": "PLM", "id": "PLM-PART-R250" }],
+    "unitCost": 0.14,
+    "currency": "USD"
+  },
+  "C112": {
+    "canonicalId": "iqb:part:c112",
+    "partNumber": "C112",
+    "name": "Capacitor 10uF",
+    "revision": "B",
+    "status": "RELEASED",
+    "externalIds": [{ "system": "PLM", "id": "PLM-PART-C112" }],
+    "unitCost": 0.22,
+    "currency": "USD"
+  },
+  "IC-78L05": {
+    "canonicalId": "iqb:part:ic-78l05",
+    "partNumber": "IC-78L05",
+    "name": "Voltage Regulator 5V",
+    "revision": "C",
+    "status": "RELEASED",
+    "externalIds": [{ "system": "PLM", "id": "PLM-PART-IC78L05" }],
+    "unitCost": 1.85,
+    "currency": "USD"
+  },
+  "M-ALT-01": {
+    "canonicalId": "iqb:part:m-alt-01",
+    "partNumber": "M-ALT-01",
+    "name": "Mounting Alternative 01",
+    "revision": "A",
+    "status": "RELEASED",
+    "externalIds": [{ "system": "ERP", "id": "ERP-MAT-MALT01" }],
+    "unitCost": 0.05,
+    "currency": "USD"
+  }
+}
