@@ -300,8 +300,8 @@ export interface OpenRouterModel {
 }
 
 export const FREE_MODELS: FreeModel[] = [
-  { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Llama 3.3 70B', provider: 'Meta', contextWindow: 128000 },
-  { id: 'deepseek/deepseek-chat-v3-0324:free', name: 'DeepSeek V3', provider: 'DeepSeek', contextWindow: 65536 },
-  { id: 'google/gemma-3-27b-it:free', name: 'Gemma 3 27B', provider: 'Google', contextWindow: 131072 },
-  { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B', provider: 'Mistral', contextWindow: 32768 },
+  { id: 'meta-llama/llama-3.3-70b-instruct', name: 'Llama 3.3 70B', provider: 'Meta', contextWindow: 128000 },
+  { id: 'google/gemma-3-27b-it', name: 'Gemma 3 27B', provider: 'Google', contextWindow: 131072 },
+  { id: 'mistralai/mistral-small-3.1-24b-instruct', name: 'Mistral Small 3.1 24B', provider: 'Mistral', contextWindow: 128000 },
+  { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Llama 3.3 70B (free)', provider: 'Meta', contextWindow: 128000 },
 ];

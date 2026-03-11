@@ -2,11 +2,15 @@ import type { ParsedIntent, WorkflowResult, ChatMessage } from '../types/intents
 
 const OPENROUTER_BASE = 'https://openrouter.ai/api/v1';
 
+// Paid models first (fast + cheap), then free as fallback
 export const FREE_MODELS_IDS = [
+  'meta-llama/llama-3.3-70b-instruct',
+  'google/gemma-3-27b-it',
+  'mistralai/mistral-small-3.1-24b-instruct',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'deepseek/deepseek-chat-v3-0324:free',
   'google/gemma-3-27b-it:free',
-  'mistralai/mistral-7b-instruct:free',
+  'mistralai/mistral-small-3.1-24b-instruct:free',
+  'nousresearch/hermes-3-llama-3.1-405b:free',
 ];
 
 // ============================================================
@@ -116,7 +120,7 @@ function safeParseIntent(raw: string, originalQuery: string): ParsedIntent {
       rawQuery: originalQuery,
     };
   } catch {
-    console.warn('[openrouter] Failed to parse intent JSON:', raw.slice(0, 200));
+    console.warn('[openrouter] Failed to parse intent JSON:', JSON.stringify(raw.slice(0, 400)));
     return { intent: 'unknown', confidence: 0.1, parameters: { rawQuery: originalQuery }, rawQuery: originalQuery };
   }
 }
@@ -171,27 +175,46 @@ async function fetchWithFallback(
   const models = [primaryModel, ...FREE_MODELS_IDS.filter((m) => m !== primaryModel)];
 
   for (const model of models) {
-    const response = await fetch(`${OPENROUTER_BASE}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://iqbrain.ai',
-        'X-Title': 'IQBrain',
-      },
-      body: JSON.stringify({ ...body, model }),
-    });
+    let response: globalThis.Response;
+    try {
+      response = await fetch(`${OPENROUTER_BASE}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://iqbrain.ai',
+          'X-Title': 'IQBrain',
+        },
+        body: JSON.stringify({ ...body, model }),
+      });
+    } catch (err) {
+      console.warn(`[openrouter] Model ${model} network error (${(err as Error).message}), trying next…`);
+      await new Promise((r) => setTimeout(r, 1000));
+      continue;
+    }
 
-    if (response.status === 429 || response.status === 503) {
+    if (response.status === 429 || response.status === 503 || response.status === 404) {
       console.warn(`[openrouter] Model ${model} returned ${response.status}, trying next…`);
+      await new Promise((r) => setTimeout(r, 500));
       continue;
     }
 
     if (!response.ok) {
-      throw new Error(`[openrouter] HTTP ${response.status}: ${await response.text()}`);
+      const errText = await response.text().catch(() => '(unreadable)');
+      console.warn(`[openrouter] Model ${model} returned ${response.status}: ${errText.slice(0, 200)}, trying next…`);
+      await new Promise((r) => setTimeout(r, 500));
+      continue;
     }
 
-    return response.json() as Promise<{ choices: Array<{ message: { content: string } }> }>;
+    const json = await response.json() as { choices: Array<{ message: { content: string } }> };
+    const content = json.choices?.[0]?.message?.content ?? '';
+    if (!content.trim()) {
+      console.warn(`[openrouter] Model ${model} returned empty content, trying next…`);
+      await new Promise((r) => setTimeout(r, 500));
+      continue;
+    }
+    console.log(`[openrouter] Model ${model} succeeded`);
+    return json;
   }
 
   throw new Error('[openrouter] All models exhausted');

@@ -1,5 +1,4 @@
-import { patched } from '@temporalio/workflow';
-import { v4 as uuidv4 } from 'uuid';
+import { patched, uuid4 } from '@temporalio/workflow';
 import type { WorkflowResult, IntentParams } from '../types/intents';
 
 function stubResult(workflowType: WorkflowResult['workflowType']): WorkflowResult {
@@ -8,7 +7,7 @@ function stubResult(workflowType: WorkflowResult['workflowType']): WorkflowResul
     status: 'complete',
     steps: [{ name: 'stub-execute', status: 'complete', completedAt: Date.now() }],
     data: null as unknown as never,
-    executionId: uuidv4(),
+    executionId: uuid4(),
     durationMs: 50,
   };
 }

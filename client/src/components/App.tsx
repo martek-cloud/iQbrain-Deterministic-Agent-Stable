@@ -11,8 +11,7 @@ export default function App() {
   const [selectedModel, setSelectedModel] = useState(FREE_MODELS[0].id);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Switch to false to use real backend (P2-T6)
-  const { messages, isLoading, currentStatus, sendMessage, clearMessages } = useChat({ useMock: true });
+  const { messages, isLoading, currentStatus, sendMessage, clearMessages } = useChat({ useMock: false });
 
   const handleSend = async () => {
     const trimmed = input.trim();
